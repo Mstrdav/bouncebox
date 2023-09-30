@@ -58,9 +58,23 @@ window["__onGCastApiAvailable"] = function (isAvailable) {
                             console.log(
                                 cast.framework.CastContext.getInstance().getCurrentSession()
                             );
+
+                            // add event listener to session
+                            cast.framework.CastContext.getInstance().getCurrentSession().addEventListener(
+                                cast.framework.SessionEventType.MESSAGE_RECEIVED,
+                                function (event) {
+                                    console.log(event.data);
+                                }
+                            );
+
+                            // enable send message button
+                            document.getElementById("messageButton").disabled = false;
+
                             break;
                         case cast.framework.SessionState.SESSION_ENDED:
                             console.log("SESSION_ENDED");
+                            // disable send message button
+                            document.getElementById("messageButton").disabled = true;
                             break;
                     }
                 }
@@ -79,6 +93,7 @@ window["__onGCastApiAvailable"] = function (isAvailable) {
             var button = document.createElement("button");
             button.innerHTML = "Send Message";
             button.id = "messageButton";
+            button.disabled = true;
             button.style.display = "block";
             document.body.appendChild(button);
 
