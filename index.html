@@ -1,14 +1,19 @@
+<!-- File: index.html -->
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cast Receiver</title>
-    <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
-</head>
-<body>
-    <cast-media-player></cast-media-player>
+<html>
 
-    <script src="js/receiver.js"></script>
+<head>
+  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <!-- Cast Debug Logger -->
+  <script src="//www.gstatic.com/cast/sdk/libs/devtools/debug_layer/caf_receiver_logger.js"></script>
+</head>
+
+<body style="background: black; color: white;">
+  <h1>Hello from Bouncebox's Example Chromecast Receiver!</h1>
+  <p>Here are your messages:</p>
+  <textarea name="message" id="message" cols="400" rows="100"></textarea>
+  <footer>
+    <script src="js/receiver.js" type="module"></script>
+  </footer>
 </body>
 </html>
