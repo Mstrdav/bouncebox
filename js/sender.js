@@ -1,114 +1,47 @@
 const applicationID = "C6BFAEE3";
+var session = null;
 
-window["__onGCastApiAvailable"] = function (isAvailable) {
-    if (isAvailable) {
-        console.log("Cast APIs are available");
+var namespace = 'urn:x-cast:io.github.mstrdav.cast.bouncebox';
+
+/**
+ * Listener to notify when sessions become available
+ * @param session chrome.cast.Session
+ */
+const sessionListener = function (session) {
+    console.log('New session ID:' + session.sessionId);
+    session = session;
+    // session.addUpdateListener(sessionUpdateListener);
+    // session.addMessageListener(namespace, receiverMessage);
+}
+
+/**
+ * Listener to notify when receiver is available
+ * @param receiverAvailability chrome.cast.ReceiverAvailability
+ */
+const receiverListener = function (receiverAvailability) {
+    if (receiverAvailability === chrome.cast.ReceiverAvailability.AVAILABLE) {
+        console.log("receiver found");
+    }
+}
+
+/**
+ * Initialization
+ */
+const initializeCastApi = function () {
+    console.log('initializeCastApi');
+    var sessionRequest = new chrome.cast.SessionRequest(applicationID);
+    var apiConfig = new chrome.cast.ApiConfig(sessionRequest, sessionListener, receiverListener, chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED);
+};
+
+/**
+ * Subscribe to Google Cast Api Available
+ * @param loaded API loaded or not
+ * @param errorInfo error information
+ */
+window['__onGCastApiAvailable'] = function (loaded, errorInfo) {
+    if (loaded) {
         initializeCastApi();
     } else {
-        console.log("Cast APIs not available");
+        log(errorInfo);
     }
-
-    function initializeCastApi() {
-        // var applicationID = chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID;
-        var sessionRequest = new chrome.cast.SessionRequest(applicationID);
-
-        var sessionListener = function (e) {
-            console.log("New session ID:" + e.sessionId);
-            session = e;
-            if (session.media.length != 0) {
-                console.log("Found " + session.media.length + " sessions.");
-            }
-        };
-
-        var receiverListener = function (e) {
-            if (e === "available") {
-                console.log("Chromecast was found on the network.");
-            } else {
-                console.log("There are no Chromecasts available.");
-            }
-        };
-
-        var apiConfig = new chrome.cast.ApiConfig(
-            sessionRequest,
-            sessionListener,
-            receiverListener
-        );
-
-        var onInitSuccess = function () {
-            console.log("Initialization succeeded");
-
-            // provide cast options
-            cast.framework.CastContext.getInstance().setOptions({
-                receiverApplicationId: applicationID,
-                autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
-            });
-
-            var button = document.getElementById("castButton");
-            button.style.display = "block";
-
-            // add event listeners to cast framework
-            cast.framework.CastContext.getInstance().addEventListener(
-                cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
-                function (event) {
-                    switch (event.sessionState) {
-                        case cast.framework.SessionState.SESSION_STARTED:
-                        case cast.framework.SessionState.SESSION_RESUMED:
-                            console.log("SESSION_STARTED");
-                            // log session info
-                            console.log(
-                                cast.framework.CastContext.getInstance().getCurrentSession()
-                            );
-
-                            // add event listener to session
-                            cast.framework.CastContext.getInstance().getCurrentSession().addEventListener(
-                                cast.framework.SessionEventType.MESSAGE_RECEIVED,
-                                function (event) {
-                                    console.log(event.data);
-                                }
-                            );
-
-                            // enable send message button
-                            document.getElementById("messageButton").disabled = false;
-
-                            break;
-                        case cast.framework.SessionState.SESSION_ENDED:
-                            console.log("SESSION_ENDED");
-                            // disable send message button
-                            document.getElementById("messageButton").disabled = true;
-                            break;
-                    }
-                }
-            );
-
-            // send message to receiver
-            // create new input element
-            var input = document.createElement("input");
-            input.type = "text";
-            input.value = "Hello Receiver!";
-            input.id = "messageInput";
-            input.style.display = "block";
-            document.body.appendChild(input);
-
-            // create new button element
-            var button = document.createElement("button");
-            button.innerHTML = "Send Message";
-            button.id = "messageButton";
-            button.disabled = true;
-            button.style.display = "block";
-            document.body.appendChild(button);
-
-            // add event listener to button
-            button.addEventListener("click", function () {
-                var message = document.getElementById("messageInput").value;
-                console.log("Sending message: " + message);
-                cast.framework.CastContext.getInstance().getCurrentSession().sendMessage("urn:x-cast:com.google.cast.sample.helloworld", message);
-            });
-        };
-
-        var onError = function (message) {
-            console.log("Error: " + message);
-        }
-
-        chrome.cast.initialize(apiConfig, onInitSuccess, onError);
-    }
-};
+}
