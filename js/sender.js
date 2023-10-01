@@ -9,7 +9,7 @@ window["__onGCastApiAvailable"] = function (isAvailable) {
     }
 
     function initializeCastApi() {
-        var applicationID = chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID;
+        // var applicationID = chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID;
         var sessionRequest = new chrome.cast.SessionRequest(applicationID);
 
         var sessionListener = function (e) {
