@@ -29,6 +29,16 @@ const receiverListener = function (receiverAvailability) {
  */
 const onInitSuccess = function () {
     console.log("init success");
+
+    // provide cast options
+    var castOptions = new cast.framework.CastOptions();
+    castOptions.receiverApplicationId = applicationID;
+    castOptions.autoJoinPolicy = chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED;
+    castOptions.language = 'fr-FR';
+    castOptions.resumeSavedSession = true;
+
+    cast.framework.CastContext.getInstance().setOptions(castOptions);
+
 }
 
 /**
