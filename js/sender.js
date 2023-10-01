@@ -82,7 +82,7 @@ const onError = function (e) {
  */
 const initializeCastApi = function () {
     console.log('initializeCastApi');
-    var sessionRequest = new chrome.cast.SessionRequest(applicationID);
+    var sessionRequest = new chrome.cast.SessionRequest(applicationID || chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID);
     var apiConfig = new chrome.cast.ApiConfig(sessionRequest, sessionListener, receiverListener, chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED);
     chrome.cast.initialize(apiConfig, onInitSuccess, onError);
 };
