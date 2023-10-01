@@ -25,12 +25,28 @@ const receiverListener = function (receiverAvailability) {
 }
 
 /**
+ * Callback function for init success
+ */
+const onInitSuccess = function () {
+    console.log("init success");
+}
+
+/**
+ * Generic error callback function
+ * @param e A chrome.cast.Error object
+ */
+const onError = function (e) {
+    console.log("Error: " + e);
+}
+
+/**
  * Initialization
  */
 const initializeCastApi = function () {
     console.log('initializeCastApi');
     var sessionRequest = new chrome.cast.SessionRequest(applicationID);
     var apiConfig = new chrome.cast.ApiConfig(sessionRequest, sessionListener, receiverListener, chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED);
+    chrome.cast.initialize(apiConfig, onInitSuccess, onError);
 };
 
 /**
