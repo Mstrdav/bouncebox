@@ -1,4 +1,4 @@
-const applicationID = "C6BFAEE3";
+// const applicationID = "C6BFAEE3";
 var session = null;
 var cctx = null;
 
@@ -37,7 +37,7 @@ const onInitSuccess = function () {
 
     // provide cast options
     var castOptions = new cast.framework.CastOptions();
-    castOptions.receiverApplicationId = applicationID;
+    castOptions.receiverApplicationId = applicationID || chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID;
     castOptions.androidReceiverCompatible = false;
     castOptions.autoJoinPolicy = chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED;
     castOptions.language = 'fr-FR';
