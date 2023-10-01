@@ -1,5 +1,6 @@
 const applicationID = "C6BFAEE3";
 var session = null;
+var cctx = null;
 
 var namespace = 'urn:x-cast:io.github.mstrdav.cast.bouncebox';
 
@@ -29,16 +30,29 @@ const receiverListener = function (receiverAvailability) {
  */
 const onInitSuccess = function () {
     console.log("init success");
+    cctx = cast.framework.CastContext.getInstance();
 
     // provide cast options
     var castOptions = new cast.framework.CastOptions();
     castOptions.receiverApplicationId = applicationID;
+    castOptions.androidReceiverCompatible = false;
     castOptions.autoJoinPolicy = chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED;
     castOptions.language = 'fr-FR';
     castOptions.resumeSavedSession = true;
 
-    cast.framework.CastContext.getInstance().setOptions(castOptions);
+    cctx.setOptions(castOptions);
     console.log("cast options set");
+
+    // credentials
+    let credentials = new cast.framework.CastCredentials("{\"userId\":\"Coolin\"}");
+    cctx.setLaunchCredentialsData(credentials);
+    console.log("credentials set");
+
+    // add event listeners
+    cctx.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, function (event) {
+        console.log("session state changed");
+        console.log(event);
+    });
 }
 
 /**
