@@ -2,6 +2,9 @@ const applicationID = "C6BFAEE3";
 var session = null;
 var cctx = null;
 
+var remotePlayer = null;
+var remotePlayerController = null;
+
 var namespace = 'urn:x-cast:io.github.mstrdav.cast.bouncebox';
 
 /**
@@ -44,13 +47,24 @@ const onInitSuccess = function () {
     console.log("cast options set");
 
     // credentials
-    let credentials = new cast.framework.CastCredentials("{\"userId\":\"Coolin\"}");
+    let credentials = new chrome.cast.CredentialsData("{\"userId\":\"Coolin\"}");
     cctx.setLaunchCredentialsData(credentials);
     console.log("credentials set");
 
     // add event listeners
     cctx.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, function (event) {
         console.log("session state changed");
+        console.log(event);
+    });
+
+    // create remote player and controller
+    remotePlayer = new cast.framework.RemotePlayer();
+    remotePlayerController = new cast.framework.RemotePlayerController(remotePlayer);
+    console.log("remote player created");
+
+    // event on remote player state change
+    remotePlayerController.addEventListener(cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED, function (event) {
+        console.log("is connected changed");
         console.log(event);
     });
 }
