@@ -1,4 +1,5 @@
 // const applicationID = "C6BFAEE3";
+var applicationID = null;
 var session = null;
 var cctx = null;
 
