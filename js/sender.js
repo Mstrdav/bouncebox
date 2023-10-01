@@ -38,7 +38,7 @@ const onInitSuccess = function () {
     castOptions.resumeSavedSession = true;
 
     cast.framework.CastContext.getInstance().setOptions(castOptions);
-
+    console.log("cast options set");
 }
 
 /**
@@ -68,6 +68,6 @@ window['__onGCastApiAvailable'] = function (loaded, errorInfo) {
     if (loaded) {
         initializeCastApi();
     } else {
-        log(errorInfo);
+        console.log(errorInfo);
     }
 }
