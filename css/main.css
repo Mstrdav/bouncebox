@@ -1,0 +1,121 @@
+/* 
+    The website is constitued of :
+    - an aside on the left
+        - player 1
+            - a div for the name
+            - a div for the score
+        - player 2
+            - a div for the name
+            - a div for the score
+    - a main div
+        - the canvas
+*/
+
+html {
+    height: 100%;
+}
+
+/* The body */
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #333;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5em;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+}
+
+/* The aside */
+aside {
+    user-select: none;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5em;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px;
+}
+
+/* The player divs */
+.player {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+
+    border-radius: 8px;
+    background-color: #444;
+
+    transition: all 0.2s ease-in-out;
+}
+
+.player.winner {
+    outline: 1px solid sandybrown;
+}
+
+/* The player name */
+.player .name {
+    flex-grow: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: #555;
+    border-radius: 8px 8px 0 0;
+}
+
+/* The player score */
+.player .score {
+    min-height: 50px;
+    width: 250px;
+    padding: 8px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    font-size: 2em;
+    font-weight: bold;
+    border-radius: 0 0 8px 8px;
+}
+
+/* The main div */
+main {
+    background-color: #333;
+    float: left;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5em;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* The canvas */
+canvas {
+    border-radius: 8px;
+    background-color: darkolivegreen;
+    resize: both;
+    aspect-ratio: 1;
+
+    box-shadow: 6px 6px 8px 0 rgba(0, 0, 0, 0.5);
+
+    transition: all 0.2s ease-in-out;
+}

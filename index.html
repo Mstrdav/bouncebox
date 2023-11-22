@@ -1,20 +1,25 @@
-<!-- File: index.html -->
 <!DOCTYPE html>
 <html>
-
 <head>
-  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
-  <!-- Cast Debug Logger -->
-  <script src="//www.gstatic.com/cast/sdk/libs/devtools/debug_layer/caf_receiver_logger.js"></script>
+  <title>Bouncebox</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/main.css">
 </head>
+<body>
+    <aside>
+        <div class="player player-blue">
+            <div class="name name-blue">Blue</div>
+            <div class="score score-blue"></div>
+        </div>
+        <div class="player player-red">
+            <div class="name name-red">Red</div>
+            <div class="score score-red"></div>
+        </div>
+    </aside>
+    <main>
+        <div id="board"></div>
+    </main>
 
-<body style="background: black; color: white;">
-  <h1>Hello from Bouncebox's Example Chromecast Receiver!</h1>
-  <p>Here are your messages:</p>
-  <textarea name="message" id="message" cols="400" rows="100"></textarea>
-  <cast-media-player></cast-media-player>
-  <footer>
-    <script src="js/receiver.js" type="module"></script>
-  </footer>
+  <script src="js/game.js"></script>
 </body>
 </html>
