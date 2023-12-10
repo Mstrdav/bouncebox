@@ -7,6 +7,17 @@ c.canvas.height = 500;
 board.appendChild(c.canvas);
 let currentColor = "red";
 
+const players = {
+    red: {
+        name: "red",
+        skin: "res/red.png",
+    },
+    blue: {
+        name: "blue",
+        skin: "res/blue.png",
+    },
+};
+
 let ballSize = c.canvas.width / 8;
 var balls = [];
 var arrow = {
@@ -16,9 +27,16 @@ var arrow = {
 };
 var animating = false;
 
+possibleSkins = [
+    "res/blue.png",
+    "res/red.png",
+    "res/colin.png",
+    "res/ines.png",
+];
+
 const imagesUrl = {
-    red: "res/red.png",
-    blue: "res/blue.png",
+    red: players.red.skin,
+    blue: players.blue.skin,
     white: "res/white.png",
     grey: "res/black.png",
 };
@@ -36,6 +54,10 @@ var originY = 0;
 
 // resize canvas
 function resizeCanvas(factor) {
+    if (c.canvas.width * factor > Math.min(window.innerHeight, window.innerWidth) || c.canvas.height * factor < Math.min(window.innerHeight, window.innerWidth)/2) {
+        return;
+    }
+
     c.canvas.width = c.canvas.width * factor;
     c.canvas.height = c.canvas.height * factor;
     ballSize = c.canvas.width / 8;
@@ -46,6 +68,106 @@ function resizeCanvas(factor) {
         ball.position[1] *= factor;
     });
 }
+
+const blueSkin = document.querySelector(".skin-blue");
+const redSkin = document.querySelector(".skin-red");
+
+const blueName = document.querySelector(".name-blue");
+const redName = document.querySelector(".name-red");
+
+const blueScore = document.querySelector(".score-blue");
+const redScore = document.querySelector(".score-red");
+
+// local storage
+if (localStorage.getItem("gameInfo")) {
+    let gameInfo = JSON.parse(localStorage.getItem("gameInfo"));
+    players.red.name = gameInfo.red.name || players.red.name;
+    redName.innerText = players.red.name;
+    players.blue.name = gameInfo.blue.name || players.blue.name;
+    blueName.innerText = players.blue.name;
+
+    players.red.skin = gameInfo.red.skin || players.red.skin;
+    images.red.src = players.red.skin;
+    imagesUrl.red = players.red.skin;
+    redSkin.src = players.red.skin;
+    players.blue.skin = gameInfo.blue.skin || players.blue.skin;
+    images.blue.src = players.blue.skin;
+    imagesUrl.blue = players.blue.skin;
+    blueSkin.src = players.blue.skin;
+
+    console.log("gameInfo: ", gameInfo);
+} else {
+    localStorage.setItem(
+        "gameInfo",
+        JSON.stringify({
+            red: {
+                name: players.red.name,
+                skin: players.red.skin,
+            },
+            blue: {
+                name: players.blue.name,
+                skin: players.blue.skin,
+            },
+        })
+    );
+}
+
+blueSkin.addEventListener("click", function () {
+    let noRedSkin = possibleSkins.filter(el => !redSkin.src.includes(el));
+    players.blue.skin = noRedSkin[noRedSkin.indexOf(players.blue.skin) + 1] || possibleSkins[0];
+    images.blue.src = players.blue.skin;
+    imagesUrl.blue = players.blue.skin;
+    this.src = players.blue.skin;
+
+    // add to local storage
+    let gameInfo = JSON.parse(localStorage.getItem("gameInfo"));
+    gameInfo.blue.skin = players.blue.skin;
+    localStorage.setItem("gameInfo", JSON.stringify(gameInfo));
+
+    // change the score images
+    let blueScoreImages = document.querySelectorAll(".score-blue img");
+    blueScoreImages.forEach((img) => {
+        img.src = players.blue.skin;
+    });
+});
+
+redSkin.addEventListener("click", function () {
+    let noBlueSkin = possibleSkins.filter(el => !blueSkin.src.includes(el));
+    players.red.skin = noBlueSkin[noBlueSkin.indexOf(players.red.skin) + 1] || possibleSkins[0];
+    images.red.src = players.red.skin;
+    imagesUrl.red = players.red.skin;
+    this.src = players.red.skin;
+
+    // add to local storage
+    let gameInfo = JSON.parse(localStorage.getItem("gameInfo"));
+    gameInfo.red.skin = players.red.skin;
+    localStorage.setItem("gameInfo", JSON.stringify(gameInfo));
+
+    // change the score images
+    let redScoreImages = document.querySelectorAll(".score-red img");
+    redScoreImages.forEach((img) => {
+        img.src = players.red.skin;
+    });
+});
+
+blueName.addEventListener("input", function () {
+    players.blue.name = this.innerText;
+    console.log("players.blue.name: ", players.blue.name);
+
+    // add to local storage
+    let gameInfo = JSON.parse(localStorage.getItem("gameInfo"));
+    gameInfo.blue.name = players.blue.name;
+    localStorage.setItem("gameInfo", JSON.stringify(gameInfo));
+});
+
+redName.addEventListener("input", function () {
+    players.red.name = this.innerText;
+
+    // add to local storage
+    let gameInfo = JSON.parse(localStorage.getItem("gameInfo"));
+    gameInfo.red.name = players.red.name;
+    localStorage.setItem("gameInfo", JSON.stringify(gameInfo));
+});
 
 window.addEventListener("resize", function () {
     // check if width is bigger than height
@@ -63,9 +185,9 @@ window.addEventListener("resize", function () {
 // wheel event on canva to make it bigger
 c.canvas.addEventListener("wheel", function (event) {
     if (event.deltaY < 0) {
-        resizeCanvas(1.05);
+        resizeCanvas(1.02);
     } else {
-        resizeCanvas(0.95);
+        resizeCanvas(0.98);
     }
 });
 
@@ -220,10 +342,12 @@ window.addEventListener("touchend", function (event) {
 });
 
 // start game loop
-gameLoop();
 gameStarted = true;
+gameLoop();
 
 function gameLoop() {
+    if (!gameStarted) return;
+
     // clear canvas
     c.clearRect(0, 0, c.canvas.width, c.canvas.height);
     drawScene();
@@ -477,14 +601,34 @@ function updateScore() {
         blueScore.appendChild(img);
     }
 
-    if (redPoints > bluePoints) {
+    if (redPoints >= 5) {
         document.querySelector(".player-red").classList.add("winner");
-        document.querySelector(".player-blue").classList.remove("winner");
-    } else if (bluePoints > redPoints) {
+        winAnimation();
+    } else if (bluePoints >= 5) {
         document.querySelector(".player-blue").classList.add("winner");
-        document.querySelector(".player-red").classList.remove("winner");
-    } else {
-        document.querySelector(".player-red").classList.remove("winner");
-        document.querySelector(".player-blue").classList.remove("winner");
+        winAnimation();
     }
+}
+
+function winAnimation() {
+    // animation celebrating the winner. It uses the player's skin and the player's name
+    let winner = document.querySelector(".winner").classList[1];
+    let winnerColor = winner.split("-")[1];
+    let winnerSkin = players[winnerColor].skin;
+    let winnerName = players[winnerColor].name;
+
+    // start the animation on the canvas
+    // TODO: make a real animation
+    c.fillStyle = "darkgreen";
+    c.fillRect(0, 0, c.canvas.width, c.canvas.height);
+    c.fillStyle = winnerColor;
+    c.font = "30px Arial";
+    c.fillText(winnerName + " won!", 10, 50);
+    c.drawImage(images[winnerColor], 10, 60, 50, 50);
+    c.drawImage(images[winnerColor], 70, 60, 50, 50);
+    c.drawImage(images[winnerColor], 130, 60, 50, 50);
+    c.drawImage(images[winnerColor], 190, 60, 50, 50);
+    c.drawImage(images[winnerColor], 250, 60, 50, 50);
+
+    gameStarted = false;
 }
