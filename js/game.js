@@ -74,6 +74,9 @@ function resizeCanvas(factor) {
     });
 }
 
+// resize to the size of the screen
+resizeCanvas((Math.min(window.innerHeight, window.innerWidth) - 50) / c.canvas.width);
+
 const blueSkin = document.querySelector(".skin-blue");
 const redSkin = document.querySelector(".skin-red");
 
@@ -294,6 +297,7 @@ window.addEventListener("mouseup", function (event) {
 
 // touch events
 window.addEventListener("touchstart", function (event) {
+    event.preventDefault();
     // if not animating and left click
     if (!animating) {
         originX = event.touches[0].clientX;
@@ -303,6 +307,7 @@ window.addEventListener("touchstart", function (event) {
 });
 
 window.addEventListener("touchmove", function (event) {
+    event.preventDefault();
     // record the offset of the mouse from the start of the movement
     if (mouseDown) {
         arrow.color = currentColor;
@@ -319,6 +324,7 @@ window.addEventListener("touchmove", function (event) {
 });
 
 window.addEventListener("touchend", function (event) {
+    event.preventDefault();
     // if not animating and left click
     if (!animating) {
         mouseDown = false;
