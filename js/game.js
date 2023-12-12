@@ -32,6 +32,11 @@ possibleSkins = [
     "res/red.png",
     "res/colin.png",
     "res/ines.png",
+    "res/alexis.png",
+    "res/eli.png",
+    "res/gabriel.png",
+    "res/mael.png",
+    "res/damien.png",
 ];
 
 const imagesUrl = {
@@ -619,16 +624,11 @@ function winAnimation() {
 
     // start the animation on the canvas
     // TODO: make a real animation
-    c.fillStyle = "darkgreen";
-    c.fillRect(0, 0, c.canvas.width, c.canvas.height);
+
     c.fillStyle = winnerColor;
-    c.font = "30px Arial";
-    c.fillText(winnerName + " won!", 10, 50);
-    c.drawImage(images[winnerColor], 10, 60, 50, 50);
-    c.drawImage(images[winnerColor], 70, 60, 50, 50);
-    c.drawImage(images[winnerColor], 130, 60, 50, 50);
-    c.drawImage(images[winnerColor], 190, 60, 50, 50);
-    c.drawImage(images[winnerColor], 250, 60, 50, 50);
+    c.fillRect(0, 0, c.canvas.width, c.canvas.height);
+    
+    c.drawImage(images[winnerColor], 10, 10, c.canvas.width - 20, c.canvas.height - 20);
 
     gameStarted = false;
 }
