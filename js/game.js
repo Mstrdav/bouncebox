@@ -304,10 +304,10 @@ window.addEventListener("touchstart", function (event) {
         originY = event.touches[0].clientY;
         mouseDown = true;
     }
-});
+}, { passive: false });
 
 window.addEventListener("touchmove", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
     // record the offset of the mouse from the start of the movement
     if (mouseDown) {
         arrow.color = currentColor;
@@ -315,24 +315,35 @@ window.addEventListener("touchmove", function (event) {
         arrow.y = originY - event.touches[0].clientY;
 
         // clamp arrow length to a maximum of 100
-        // let length = Math.sqrt(arrow.x * arrow.x + arrow.y * arrow.y);
-        // if (length > 100) {
-        //     arrow.x = (arrow.x / length) * 100;
-        //     arrow.y = (arrow.y / length) * 100;
-        // }
+        let length = Math.sqrt(arrow.x * arrow.x + arrow.y * arrow.y);
+        if (length > 500) {
+            arrow.x = (arrow.x / length) * 500;
+            arrow.y = (arrow.y / length) * 500;
+        }
     }
 });
 
 window.addEventListener("touchend", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
     // if not animating and left click
     if (!animating) {
         mouseDown = false;
+
         // calculate velocity
         let velocity = [
             (originX - event.changedTouches[0].clientX) / 10,
             (originY - event.changedTouches[0].clientY) / 10,
         ];
+
+        // clamp velocity length to a maximum of 100
+        let length = Math.sqrt(velocity[0] * velocity[0] + velocity[1] * velocity[1]);
+        console.log("length: ", length)
+        if (length > 50) {
+            velocity[0] = (velocity[0] / length) * 50;
+            velocity[1] = (velocity[1] / length) * 50;
+        }
+
+
         // set velocity
         balls[0].velocity = velocity;
 
