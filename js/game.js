@@ -294,11 +294,6 @@ window.addEventListener("mouseup", function (event) {
 
 // touch events
 window.addEventListener("touchstart", function (event) {
-    // if player is not the current player, don't shoot
-    if (currentColor !== myColor) {
-        return;
-    }
-
     // if not animating and left click
     if (!animating) {
         originX = event.touches[0].clientX;
@@ -310,7 +305,7 @@ window.addEventListener("touchstart", function (event) {
 window.addEventListener("touchmove", function (event) {
     // record the offset of the mouse from the start of the movement
     if (mouseDown) {
-        arrow.color = myColor;
+        arrow.color = currentColor;
         arrow.x = originX - event.touches[0].clientX;
         arrow.y = originY - event.touches[0].clientY;
 
@@ -324,12 +319,6 @@ window.addEventListener("touchmove", function (event) {
 });
 
 window.addEventListener("touchend", function (event) {
-    // if player is not the current player, don't shoot
-    if (currentColor !== myColor) {
-        mouseDown = false;
-        return;
-    }
-
     // if not animating and left click
     if (!animating) {
         mouseDown = false;
